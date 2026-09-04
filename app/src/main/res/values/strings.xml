@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Sound Monitor</string>
+    <string name="title_sound_monitor">مانیتورینگ و سنجش صدای محیط</string>
+    <string name="subtitle_sound_monitor">تجزیه و تحلیل فرکانس و آستانه هشدار صوتی</string>
+    <string name="permission_mic_required">برای دریافت و تجزیه و تحلیل صداهای اطراف، دسترسی به میکروفون ضروری است.</string>
+    <string name="grant_permission">اعطای دسترسی میکروفون</string>
+    <string name="status_listening">در حال ضبط و تحلیل صدا</string>
+    <string name="status_paused">پایش متوقف شد</string>
+    <string name="current_sound_level">شدت صدای فعلی</string>
+    <string name="peak_frequency">فرکانس غالب</string>
+    <string name="sound_threshold">آستانه بلندی صدا (دسی‌بل - dB)</string>
+    <string name="frequency_threshold">آستانه فرکانس (کیلوهرتز - kHz)</string>
+    <string name="alarm_count_title">تعداد دفعات آلارم</string>
+    <string name="elapsed_time_title">مدت زمان نظارت</string>
+    <string name="btn_start">شروع پایش</string>
+    <string name="btn_pause">توقف موقت</string>
+    <string name="btn_reset">بازنشانی آمار</string>
+    <string name="btn_test_beep">تست بوق آلارم</string>
+    <string name="trigger_mode_title">حالت ماشه آلارم</string>
+    <string name="trigger_db">بر اساس دسی‌بل (dB)</string>
+    <string name="trigger_khz">بر اساس فرکانس (kHz)</string>
+    <string name="trigger_both">ترکیبی (dB و kHz)</string>
+    <string name="alarm_active_alert">هشدار! عبور صدا از آستانه مجاز</string>
+</resources>

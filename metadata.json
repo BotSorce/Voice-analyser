@@ -1,0 +1,6 @@
+{
+  "name": "Sound Monitor",
+  "description": "Real-time sound level monitor, frequency analyzer, audio threshold alarm, and incident tracker.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
