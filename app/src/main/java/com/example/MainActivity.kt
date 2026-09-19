@@ -16,17 +16,22 @@ import com.example.ui.SoundMonitorScreen
 import com.example.ui.SoundMonitorViewModel
 import com.example.ui.theme.MyApplicationTheme
 
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     setContent {
-      MyApplicationTheme {
+      val viewModel: SoundMonitorViewModel = viewModel()
+      val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+      
+      MyApplicationTheme(darkTheme = uiState.isDarkTheme) {
         Surface(
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
         ) {
-          val viewModel: SoundMonitorViewModel = viewModel()
           SoundMonitorScreen(viewModel = viewModel)
         }
       }

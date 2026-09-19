@@ -28,7 +28,8 @@ data class SoundMonitorUiState(
     val minDb: Float = 0f,
     val waveHistory: List<Float> = List(60) { 0f },
     val spectrumBands: List<Float> = List(32) { 0.05f },
-    val isAlarmFlashing: Boolean = false
+    val isAlarmFlashing: Boolean = false,
+    val isDarkTheme: Boolean = true
 )
 
 class SoundMonitorViewModel : ViewModel() {
@@ -169,6 +170,10 @@ class SoundMonitorViewModel : ViewModel() {
 
     fun testBeep() {
         audioAnalyzer.playBeep()
+    }
+
+    fun toggleTheme() {
+        _uiState.update { it.copy(isDarkTheme = !it.isDarkTheme) }
     }
 
     override fun onCleared() {

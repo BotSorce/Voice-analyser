@@ -38,6 +38,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -123,7 +126,7 @@ fun SoundMonitorScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = ElegantDarkBackground
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -144,7 +147,9 @@ fun SoundMonitorScreen(
                 // Header Bar with circular lavender badge matching Elegant Dark
                 HeaderBar(
                     isMonitoring = uiState.isMonitoring,
-                    permissionGranted = uiState.permissionGranted
+                    permissionGranted = uiState.permissionGranted,
+                    isDarkTheme = uiState.isDarkTheme,
+                    onToggleTheme = { viewModel.toggleTheme() }
                 )
 
                 // Permission Warning Banner if denied
@@ -201,7 +206,13 @@ fun SoundMonitorScreen(
                 // 5. Action Buttons (Start/Stop, Reset)
                 ActionControls(
                     isMonitoring = uiState.isMonitoring,
-                    onToggleMonitoring = { viewModel.toggleMonitoring() },
+                    onToggleMonitoring = {
+                        if (!uiState.permissionGranted) {
+                            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                        } else {
+                            viewModel.toggleMonitoring()
+                        }
+                    },
                     onResetStats = { viewModel.resetStatistics() }
                 )
 
@@ -214,7 +225,9 @@ fun SoundMonitorScreen(
 @Composable
 private fun HeaderBar(
     isMonitoring: Boolean,
-    permissionGranted: Boolean
+    permissionGranted: Boolean,
+    isDarkTheme: Boolean,
+    onToggleTheme: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -232,13 +245,13 @@ private fun HeaderBar(
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
-                    .background(ElegantLavender),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Mic,
                     contentDescription = null,
-                    tint = ElegantOnLavender,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -248,71 +261,92 @@ private fun HeaderBar(
                     text = stringResource(R.string.title_sound_monitor),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = ElegantTextPrimary
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = stringResource(R.string.subtitle_sound_monitor),
                     style = MaterialTheme.typography.bodySmall,
-                    color = ElegantTextSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        // Status Badge
-        val statusBg = if (!permissionGranted) {
-            ElegantCoral.copy(alpha = 0.2f)
-        } else if (isMonitoring) {
-            ElegantGreen.copy(alpha = 0.15f)
-        } else {
-            ElegantDarkSurfaceInset
-        }
-
-        val statusColor = if (!permissionGranted) {
-            ElegantCoral
-        } else if (isMonitoring) {
-            ElegantGreen
-        } else {
-            ElegantTextMuted
-        }
-
-        val statusBorder = if (!permissionGranted) {
-            ElegantCoral.copy(alpha = 0.4f)
-        } else if (isMonitoring) {
-            ElegantGreen.copy(alpha = 0.4f)
-        } else {
-            ElegantDarkOutline
-        }
-
-        val statusText = if (!permissionGranted) {
-            "عدم دسترسی"
-        } else if (isMonitoring) {
-            "در حال پایش"
-        } else {
-            "متوقف"
-        }
-
         Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(20.dp))
-                .background(statusBg)
-                .border(1.dp, statusBorder, RoundedCornerShape(20.dp))
-                .padding(horizontal = 10.dp, vertical = 5.dp)
-                .testTag("status_indicator_badge"),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(
+            // Theme Toggle Button
+            IconButton(
+                onClick = onToggleTheme,
                 modifier = Modifier
-                    .size(8.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
-                    .background(statusColor)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = statusText,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = statusColor
-            )
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Icon(
+                    imageVector = if (isDarkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
+                    contentDescription = "Toggle Theme",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            // Status Badge
+            val statusBg = if (!permissionGranted) {
+                ElegantCoral.copy(alpha = 0.2f)
+            } else if (isMonitoring) {
+                ElegantGreen.copy(alpha = 0.15f)
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
+
+            val statusColor = if (!permissionGranted) {
+                ElegantCoral
+            } else if (isMonitoring) {
+                ElegantGreen
+            } else {
+                MaterialTheme.colorScheme.outline
+            }
+
+            val statusBorder = if (!permissionGranted) {
+                ElegantCoral.copy(alpha = 0.4f)
+            } else if (isMonitoring) {
+                ElegantGreen.copy(alpha = 0.4f)
+            } else {
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+            }
+
+            val statusText = if (!permissionGranted) {
+                "عدم دسترسی"
+            } else if (isMonitoring) {
+                "در حال پایش"
+            } else {
+                "متوقف"
+            }
+
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(statusBg)
+                    .border(1.dp, statusBorder, RoundedCornerShape(20.dp))
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                    .testTag("status_indicator_badge"),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(statusColor)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = statusText,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = statusColor
+                )
+            }
         }
     }
 }
